@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reviews - {{ job.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Reviews for: {{ job.title }}</h2>
+            <p class="text-muted">{{ job.employer.user.get_full_name }}</p>
+            
+            <!-- Rating Summary -->
+            <div class="card mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="card-body text-center">
+                    <h3>{{ average_rating|floatformat:1 }}/5.0</h3>
+                    <div class="mb-2">
+                        {% for i in "12345" %}
+                            {% if i|add:"0" <= average_rating %}
+                                <i class="fas fa-star"></i>
+                            {% elif i|add:"0.5" <= average_rating %}
+                                <i class="fas fa-star-half-alt"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <p class="mb-0">Based on {{ total_reviews }} reviews</p>
+                </div>
+            </div>
+            
+            <!-- Reviews List -->
+            {% if reviews %}
+                {% for review in reviews %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="card-title">{{ review.reviewer.user.get_full_name }}</h5>
+                                    <p class="text-muted small">{{ review.created_at|date:"M d, Y" }}</p>
+                                </div>
+                                <div class="text-warning">
+                                    {% for i in "12345" %}
+                                        {% if i|add:"0" <= review.rating %}
+                                            <i class="fas fa-star"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% if review.comment %}
+                                <p class="card-text">{{ review.comment }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> No reviews yet for this job.
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Job Details</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Category:</strong> {{ job.category.name }}</p>
+                    <p><strong>Location:</strong> {{ job.location }}</p>
+                    <p><strong>Salary:</strong> KES {{ job.salary|floatformat:0 }}</p>
+                    <p><strong>Job Type:</strong> {{ job.get_job_type_display }}</p>
+                    <p><strong>Posted:</strong> {{ job.created_at|date:"M d, Y" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

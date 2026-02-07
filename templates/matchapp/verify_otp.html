@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Verify OTP{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h3 class="mb-0">
+                        <i class="fas fa-mobile-alt"></i> Verify OTP
+                    </h3>
+                </div>
+                
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> An OTP has been sent to <strong>{{ phone }}</strong>
+                    </div>
+                    
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.otp_code.id_for_label }}" class="form-label">
+                                <strong>Enter 6-Digit OTP</strong>
+                            </label>
+                            <input type="text" class="form-control form-control-lg text-center" 
+                                   id="{{ form.otp_code.id_for_label }}" 
+                                   name="otp_code" 
+                                   maxlength="6" 
+                                   placeholder="000000"
+                                   autocomplete="off"
+                                   style="letter-spacing: 10px; font-size: 2em; font-weight: bold;">
+                            {% if form.otp_code.errors %}
+                                <div class="text-danger small mt-2">{{ form.otp_code.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted d-block mt-2">
+                                The OTP expires in 5 minutes
+                            </small>
+                        </div>
+                        
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-2">
+                            <i class="fas fa-check"></i> Verify OTP
+                        </button>
+                        <a href="{% url 'setup_two_factor_auth' %}" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-redo"></i> Resend OTP
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-focus and format OTP input
+    const otpInput = document.querySelector('input[name="otp_code"]');
+    if (otpInput) {
+        otpInput.addEventListener('input', function(e) {
+            // Only allow numbers
+            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+        });
+        otpInput.focus();
+    }
+</script>
+{% endblock %}

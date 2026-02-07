@@ -1,0 +1,229 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Admin Login - Match-web{% endblock %}
+
+{% block extrastyle %}
+<style>
+    html, body {
+        background: linear-gradient(135deg, #87CEEB 0%, #E0F6FF 100%) !important;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow-x: hidden;
+    }
+    
+    /* Floating bubbles for admin login */
+    @keyframes rise {
+        0% {
+            bottom: -10vh;
+            opacity: 1;
+        }
+        100% {
+            bottom: 100vh;
+            opacity: 0;
+        }
+    }
+    
+    .admin-bubble {
+        position: fixed;
+        bottom: 0;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.1));
+        animation: rise linear infinite;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    .login-container {
+        position: relative;
+        z-index: 10;
+    }
+    
+    .login-box {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 51, 102, 0.2);
+        padding: 3rem 2rem;
+        max-width: 400px;
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        animation: slideUp 0.6s ease-out;
+    }
+    
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .login-logo {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .login-logo i {
+        font-size: 3.5rem;
+        color: #0066cc;
+        animation: bounce 2s ease-in-out infinite;
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .login-title {
+        text-align: center;
+        color: #003d80;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        font-size: 1.8rem;
+    }
+    
+    .login-subtitle {
+        text-align: center;
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+    }
+    
+    #login-form {
+        margin-top: 1.5rem;
+    }
+    
+    .form-row {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-row label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #003d80;
+        font-weight: 600;
+    }
+    
+    .form-row input {
+        width: 100%;
+        padding: 10px 16px;
+        border: 2px solid #87CEEB;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+        color: #333;
+    }
+    
+    .form-row input::placeholder {
+        color: #999;
+    }
+    
+    .form-row input:focus {
+        outline: none;
+        border-color: #0066cc;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        background: white;
+        color: #333;
+    }
+    
+    .submit-row {
+        margin-top: 2rem;
+    }
+    
+    .submit-row .default {
+        background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+        color: white;
+        padding: 10px 16px;
+        border-radius: 8px;
+        width: 100%;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+    }
+    
+    .submit-row .default:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+    }
+    
+    .login-help { 
+        color: #666; 
+        text-align: center; 
+        font-size: 0.9rem;
+    }
+    
+    .login-help a {
+        color: #0066cc;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    
+    .login-help a:hover {
+        color: #0052a3;
+        text-decoration: underline;
+    }
+    
+    /* Hide Django admin branding for login page */
+    #header, #branding, .breadcrumbs, .submit-row input[type="hidden"] {
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-box">
+        <div class="login-logo">
+            <i class="fas fa-hands-helping"></i>
+        </div>
+        <h2 class="login-title">Match-web Admin</h2>
+        <p class="login-subtitle">Sign in to the admin area</p>
+        
+        <form action="{% url 'admin:login' %}" method="post" id="login-form">{% csrf_token %}
+            <div class="form-row">
+                <label for="id_username"><i class="fas fa-user me-2"></i>Username</label>
+                {{ form.username }}
+            </div>
+            <div class="form-row">
+                <label for="id_password"><i class="fas fa-lock me-2"></i>Password</label>
+                {{ form.password }}
+            </div>
+            <div class="submit-row"> 
+                <button type="submit" class="default"><i class="fas fa-sign-in-alt me-2"></i>Log in</button>
+            </div>
+        </form>
+        
+        <hr style="color: #ddd; margin: 2rem 0;">
+        
+        <p class="login-help"><a href="{% url 'password_reset' %}"><i class="fas fa-redo me-1"></i>Forgot password?</a></p>
+    </div>
+</div>
+
+<script>
+    // Create floating bubbles for admin login page
+    function createAdminBubbles() {
+        for (let i = 0; i < 12; i++) {
+            const bubble = document.createElement('div');
+            bubble.classList.add('admin-bubble');
+            const size = Math.random() * 80 + 20;
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = Math.random() * 100 + '%';
+            bubble.style.animationDuration = (Math.random() * 15 + 10) + 's';
+            bubble.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(bubble);
+        }
+    }
+    createAdminBubbles();
+</script>
+{% endblock %}

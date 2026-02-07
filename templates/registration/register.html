@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Register - HouseHelp Match{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h2 class="card-title mb-4 text-center">Create Your Account</h2>
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <fieldset class="mb-4">
+                            <legend class="fs-6 mb-3">User Information</legend>
+                            {{ user_form|crispy }}
+                        </fieldset>
+
+                        <fieldset class="mb-4">
+                            <legend class="fs-6 mb-3">Account Type</legend>
+                            {{ profile_form|crispy }}
+                        </fieldset>
+
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                    </form>
+
+                    <div class="mt-4 text-center">
+                        <p class="text-muted">Already have an account? <a href="{% url 'login' %}">Log in here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

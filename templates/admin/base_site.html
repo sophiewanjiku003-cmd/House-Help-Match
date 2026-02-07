@@ -1,0 +1,231 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Match-web Admin{% endblock %}
+
+{% block extrastyle %}
+<style>
+    html, body {
+        background: linear-gradient(135deg, #87CEEB 0%, #E0F6FF 100%) !important;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+    
+    /* Floating bubbles */
+    @keyframes rise {
+        0% {
+            bottom: -10vh;
+            opacity: 1;
+        }
+        100% {
+            bottom: 100vh;
+            opacity: 0;
+        }
+    }
+    
+    .admin-bubble {
+        position: fixed;
+        bottom: 0;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.1));
+        animation: rise linear infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+    
+    #header, #content, #footer, #sidebar {
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Admin header styling */
+    #header {
+        background: rgba(0, 51, 102, 0.95) !important;
+        border-bottom: 3px solid #0066cc;
+        box-shadow: 0 2px 10px rgba(0, 51, 102, 0.2);
+    }
+    
+    #branding h1, #site-name {
+        color: white !important;
+        font-weight: 700 !important;
+    }
+    
+    #branding a {
+        color: white !important;
+        text-decoration: none;
+    }
+    
+    #branding a:hover {
+        opacity: 0.9;
+    }
+    
+    /* Admin content background */
+    #content, #content-main {
+        background: rgba(255, 255, 255, 0.93) !important;
+        border-radius: 12px;
+        backdrop-filter: blur(5px);
+        margin: 1.5rem;
+        box-shadow: 0 8px 32px rgba(0, 51, 102, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    
+    /* Module headers */
+    .module h2, .module h3, h1, h2, h3, h4, h5, h6 {
+        color: #ffffff !important;
+        border-bottom: 2px solid #87CEEB !important;
+    }
+    
+    /* Text content visibility */
+    #content, #content-main, .module {
+        color: #ffffff !important;
+    }
+    
+    p, span, div, label, a {
+        color: #ffffff !important;
+    }
+    
+    /* Form styling */
+    .form-row, fieldset {
+        background: rgba(255, 255, 255, 0.5) !important;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 0.5rem 0;
+    }
+    
+    .form-row label, fieldset legend {
+        color: #003d80 !important;
+        font-weight: 600;
+    }
+    
+    input[type="text"], input[type="email"], input[type="password"], input[type="number"], 
+    input[type="date"], input[type="datetime"], textarea, select {
+        border: 2px solid #87CEEB !important;
+        border-radius: 6px !important;
+        padding: 8px 12px !important;
+        transition: all 0.3s ease;
+        background: white !important;
+        color: #333 !important;
+    }
+    
+    input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, 
+    input[type="number"]::placeholder, input[type="date"]::placeholder, input[type="datetime"]::placeholder, 
+    textarea::placeholder {
+        color: #999 !important;
+    }
+    
+    input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, 
+    input[type="number"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, 
+    textarea:focus, select:focus {
+        border-color: #0066cc !important;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1) !important;
+        outline: none;
+        background: white !important;
+        color: #333 !important;
+    }
+    
+    /* Buttons styling */
+    .deletelink, .button, input[type="button"], input[type="submit"], a.button {
+        background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%) !important;
+        border: none !important;
+        color: white !important;
+        padding: 8px 16px !important;
+        border-radius: 6px !important;
+        text-decoration: none !important;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+    }
+    
+    .deletelink:hover, .button:hover, input[type="button"]:hover, 
+    input[type="submit"]:hover, a.button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 102, 204, 0.4);
+    }
+    
+    .deletelink {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+    
+    .deletelink:hover {
+        box-shadow: 0 6px 16px rgba(220, 53, 69, 0.4);
+    }
+    
+    /* Logo styling in header */
+    .admin-logo {
+        width: 32px;
+        height: 32px;
+        display: inline-block;
+        margin-right: 12px;
+    }
+    
+    /* Table styling */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    th {
+        background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%) !important;
+        color: white !important;
+        font-weight: 700;
+        padding: 12px;
+        text-align: left;
+    }
+    
+    td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #87CEEB;
+        color: #ffffff !important;
+    }
+    
+    tr:hover {
+        background: rgba(0, 102, 204, 0.05) !important;
+    }
+    
+    tr:hover {
+        background: rgba(135, 206, 235, 0.1) !important;
+    }
+</style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="/" style="display:flex; align-items:center; text-decoration:none;">
+        <span class="admin-logo"><i class="fas fa-hands-helping" style="font-size:28px;"></i></span>
+        Match-web Admin
+    </a>
+</h1>
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script>
+    // Create floating bubbles for admin pages
+    function createAdminPageBubbles() {
+        for (let i = 0; i < 10; i++) {
+            const bubble = document.createElement('div');
+            bubble.classList.add('admin-bubble');
+            const size = Math.random() * 80 + 20;
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = Math.random() * 100 + '%';
+            bubble.style.animationDuration = (Math.random() * 15 + 12) + 's';
+            bubble.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(bubble);
+        }
+    }
+    document.addEventListener('DOMContentLoaded', createAdminPageBubbles);
+</script>
+{% endblock %}
+
+{% block nav-global %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div id="content-main" class="container">
+    {{ block.super }}
+</div>
+{% endblock %}

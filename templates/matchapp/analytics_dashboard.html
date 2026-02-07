@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-5">
+    <!-- Page Header -->
+    <div class="mb-4">
+        <h2><i class="fas fa-chart-line"></i> Analytics Dashboard</h2>
+        <p class="text-muted">Monitor platform activity and performance metrics</p>
+    </div>
+    
+    <!-- Key Metrics Row 1 -->
+    <div class="row mb-4">
+        <!-- Users -->
+        <div class="col-md-3 mb-3">
+            <div class="card text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body">
+                    <h6 class="card-title text-uppercase">Total Users</h6>
+                    <h3 class="mb-2">{{ total_users }}</h3>
+                    <small>
+                        <i class="fas fa-user-tie"></i> {{ total_employers }} Employers
+                        <i class="fas fa-user-nurse ms-2"></i> {{ total_househelps }} Househelps
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Jobs -->
+        <div class="col-md-3 mb-3">
+            <div class="card text-white" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="card-body">
+                    <h6 class="card-title text-uppercase">Total Jobs</h6>
+                    <h3 class="mb-2">{{ total_jobs }}</h3>
+                    <small>
+                        <i class="fas fa-check-circle"></i> {{ active_jobs }} Active
+                        <i class="fas fa-clock ms-2"></i> {{ pending_jobs }} Pending
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Applications -->
+        <div class="col-md-3 mb-3">
+            <div class="card text-white" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="card-body">
+                    <h6 class="card-title text-uppercase">Applications</h6>
+                    <h3 class="mb-2">{{ total_applications }}</h3>
+                    <small>
+                        <i class="fas fa-thumbs-up"></i> {{ accepted_applications }} Accepted
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Revenue -->
+        <div class="col-md-3 mb-3">
+            <div class="card text-white" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                <div class="card-body">
+                    <h6 class="card-title text-uppercase">Revenue</h6>
+                    <h3 class="mb-2">KES {{ total_revenue|floatformat:0 }}</h3>
+                    <small>
+                        <i class="fas fa-check"></i> {{ completed_payments }} Transactions
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Key Metrics Row 2 -->
+    <div class="row mb-4">
+        <!-- Matches -->
+        <div class="col-md-3 mb-3">
+            <div class="card text-white" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333;">
+                <div class="card-body">
+                    <h6 class="card-title text-uppercase">Matches</h6>
+                    <h3 class="mb-2">{{ total_matches }}</h3>
+                    <small>
+                        <i class="fas fa-check"></i> {{ completed_matches }} Completed
+                        <i class="fas fa-hourglass-half ms-2"></i> {{ active_matches }} Active
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reviews -->
+        <div class="col-md-3 mb-3">
+            <div class="card text-white" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #333;">
+                <div class="card-body">
+                    <h6 class="card-title text-uppercase">Reviews</h6>
+                    <h3 class="mb-2">{{ total_reviews }}</h3>
+                    <small>
+                        <i class="fas fa-star"></i> Avg: {{ avg_rating|floatformat:1 }}/5.0
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity (30 days) -->
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Activity (Last 30 Days)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <h4>{{ recent_jobs }}</h4>
+                            <p class="text-muted small">New Jobs</p>
+                        </div>
+                        <div class="col-4">
+                            <h4>{{ recent_applications }}</h4>
+                            <p class="text-muted small">Applications</p>
+                        </div>
+                        <div class="col-4">
+                            <h4>{{ recent_matches_count }}</h4>
+                            <p class="text-muted small">Matches</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Top Performers -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-crown"></i> Top Rated Househelps</h5>
+                </div>
+                <div class="card-body">
+                    {% if top_househelps %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Name</th>
+                                        <th>Rating</th>
+                                        <th>Reviews</th>
+                                        <th>Skills</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for househelp in top_househelps %}
+                                        <tr>
+                                            <td><span class="badge bg-primary">#{{ forloop.counter }}</span></td>
+                                            <td>{{ househelp.profile.user.get_full_name }}</td>
+                                            <td>
+                                                <div class="text-warning">
+                                                    {% for i in "12345" %}
+                                                        {% if i|add:"0" <= househelp.avg_rating %}
+                                                            <i class="fas fa-star"></i>
+                                                        {% else %}
+                                                            <i class="far fa-star"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    <strong>{{ househelp.avg_rating|floatformat:1 }}/5</strong>
+                                                </div>
+                                            </td>
+                                            <td><span class="badge bg-secondary">{{ househelp.review_count }}</span></td>
+                                            <td class="text-muted small">{{ househelp.skills|truncatewords:3 }}</td>
+                                            <td>
+                                                <a href="{% url 'househelp_reviews' househelp.id %}" class="btn btn-sm btn-outline-primary">
+                                                    View Profile
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No househelps with reviews yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Matches -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-handshake"></i> Recent Matches</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_matches %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Househelp</th>
+                                        <th>Job</th>
+                                        <th>Status</th>
+                                        <th>Score</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for match in recent_matches %}
+                                        <tr>
+                                            <td>{{ match.applicant.profile.user.get_full_name }}</td>
+                                            <td>{{ match.job.title }}</td>
+                                            <td>
+                                                <span class="badge 
+                                                    {% if match.status == 'completed' %}bg-success
+                                                    {% elif match.status == 'hired' %}bg-info
+                                                    {% elif match.status == 'interviewing' %}bg-warning
+                                                    {% elif match.status == 'contacted' %}bg-primary
+                                                    {% else %}bg-secondary
+                                                    {% endif %}">
+                                                    {{ match.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar" role="progressbar" 
+                                                         style="width: {{ match.match_score }}%;">
+                                                        {{ match.match_score }}%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-muted small">{{ match.created_at|date:"M d, Y" }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No matches yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- More Statistics Link -->
+            <div class="mt-3 text-center">
+                <a href="{% url 'user_statistics' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-chart-bar"></i> View Detailed User Statistics
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+        border-radius: 10px 10px 0 0;
+    }
+</style>
+{% endblock %}

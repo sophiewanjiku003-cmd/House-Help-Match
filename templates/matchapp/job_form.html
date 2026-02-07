@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ title }} - HouseHelp Match{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">{{ title }}</h2>
+                </div>
+                <div class="card-body p-5">
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Title Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label"><strong>Job Title</strong></label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger small">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Category Field -->
+                        <div class="mb-4">
+                            <label class="form-label"><strong>Househelp Categories</strong></label>
+                            <small class="form-text text-muted d-block mb-3">Select one or more categories that apply to this job</small>
+                            <div class="row g-2">
+                                {% for category in form.category.field.queryset %}
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-check category-check">
+                                            <input class="form-check-input" type="checkbox" 
+                                                   name="category" id="category_{{ category.id }}" 
+                                                   value="{{ category.id }}"
+                                                   {% if category.id in form.category.value %}checked{% endif %}>
+                                            <label class="form-check-label" for="category_{{ category.id }}" style="cursor: pointer;">
+                                                <i class="{{ category.icon }} me-2"></i>
+                                                <strong>{{ category.name }}</strong>
+                                                <br>
+                                                <small class="text-muted d-block ms-4">{{ category.description|truncatewords:5 }}</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% if form.category.errors %}
+                                <div class="text-danger small mt-2">{{ form.category.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Description Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label"><strong>Job Description</strong></label>
+                            <small class="form-text text-muted d-block mb-2">Describe what this job entails, daily responsibilities, and expectations</small>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Requirements Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.requirements.id_for_label }}" class="form-label"><strong>Requirements</strong></label>
+                            <small class="form-text text-muted d-block mb-2">List required skills, experience, and qualifications</small>
+                            {{ form.requirements }}
+                            {% if form.requirements.errors %}
+                                <div class="text-danger small">{{ form.requirements.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Location Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.location.id_for_label }}" class="form-label"><strong>Location</strong></label>
+                            {{ form.location }}
+                            {% if form.location.errors %}
+                                <div class="text-danger small">{{ form.location.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Salary Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.salary.id_for_label }}" class="form-label"><strong>Salary (KES/Month)</strong></label>
+                            {{ form.salary }}
+                            {% if form.salary.errors %}
+                                <div class="text-danger small">{{ form.salary.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Job Type Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.job_type.id_for_label }}" class="form-label"><strong>Job Type</strong></label>
+                            {{ form.job_type }}
+                            {% if form.job_type.errors %}
+                                <div class="text-danger small">{{ form.job_type.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Hours Per Week Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.hours_per_week.id_for_label }}" class="form-label"><strong>Hours Per Week</strong></label>
+                            {{ form.hours_per_week }}
+                            {% if form.hours_per_week.errors %}
+                                <div class="text-danger small">{{ form.hours_per_week.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mt-4 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Job
+                            </button>
+                            <a href="{% url 'job_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-check {
+        padding: 12px;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-check:hover {
+        border-color: #667eea;
+        background-color: #f8f9ff;
+    }
+    
+    .form-check-input:checked ~ .form-check-label {
+        color: #667eea;
+        font-weight: bold;
+    }
+    
+    .form-check-input {
+        margin-top: 5px;
+    }
+    
+    textarea {
+        border-radius: 8px;
+        min-height: 120px;
+    }
+    
+    input[type="text"], input[type="number"], input[type="email"], select {
+        border-radius: 8px;
+    }
+    
+    .form-label {
+        margin-bottom: 8px;
+    }
+</style>
+{% endblock %}
